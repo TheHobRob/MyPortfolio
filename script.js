@@ -13,7 +13,7 @@
       "hero-h1": "Bilingual professional developing web skills & building software.",
       "hero-sub": "Quality & operations professional moving toward data and business analysis — bilingual in English and Spanish, fluent in SAP/EMOS, and currently earning a QuickBooks ProAdvisor certification.",
       "about-h2": "About",
-      "about-p1": "Hi there! I am a quality technician at a healthcare packaging corporation.",
+      "about-p1": "Hi there! I am a quality technician at a healthcare packaging corporation. Update: we got fired",
       "about-p2": "I'm bilingual — full professional proficiency in English and Spanish — and I use both daily to keep instructions and corrections clear across a mixed-language floor. I'm now building toward analyst-level data work: closing the accounting gaps in my background through a QuickBooks certification, and rebuilding my web development skills from a partial computer science background at the University of Michigan.",
       "fact-based-label": "Based in",
       "fact-based-value": "Grand Rapids, MI",
