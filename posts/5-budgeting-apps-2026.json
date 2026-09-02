@@ -1,0 +1,38 @@
+{
+  "slug": "5-budgeting-apps-2026",
+  "title": "5 Budgeting Apps Worth Trying in 2026",
+  "author": "Roberto Jimenez-Martinez",
+  "date": "2026-03-03",
+  "issue": 5,
+  "tags": ["Finance", "Tools"],
+  "excerpt": "A look at budgeting tools that actually stick, from bare-bones spreadsheets to full automation.",
+  "heroImage": {
+    "src": "",
+    "alt": "Placeholder hero image for budgeting apps post"
+  },
+  "body": [
+    { "type": "paragraph", "runs": [
+      { "text": "Every January I try a new budgeting app, and every January I ask myself the same question: " },
+      { "text": "why does this feel so complicated?", "italic": true },
+      { "text": " This year's roundup is different \u2014 five tools that stuck around past week two." }
+    ]},
+    { "type": "heading", "text": "Why most budgeting apps fail" },
+    { "type": "paragraph", "runs": [
+      { "text": "Most apps ask you to change your habits to fit the tool. The ones on this list did the opposite." }
+    ]},
+    { "type": "pullquote", "text": "The best budget is the one you actually open twice a week.", "attribution": "Placeholder attribution" },
+    { "type": "list", "style": "unordered", "items": [
+      { "runs": [{ "text": "App One \u2014 best for beginners" }] },
+      { "runs": [{ "text": "App Two \u2014 best for couples" }] },
+      { "runs": [{ "text": "App Three \u2014 best free option", "link": "https://example.com" }] }
+    ]},
+    { "type": "divider" },
+    { "type": "columns", "columns": [
+      { "runs": [{ "text": "Pros: fast setup, clean interface, real bank sync." }] },
+      { "runs": [{ "text": "Cons: premium tier gatekeeps the best features." }] }
+    ]},
+    { "type": "paragraph", "runs": [
+      { "text": "Placeholder closing paragraph \u2014 replace with your real take once you've actually tested these." }
+    ]}
+  ]
+}

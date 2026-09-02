@@ -1,0 +1,570 @@
+/* ============================================
+   Blog / Zine theme
+   Layered on top of styles.css — reuses the site's
+   existing color tokens (--ink, --paper, --steel,
+   --signal, --rule, --tag-bg) so the Blog section
+   shares one palette with the rest of the site. Only
+   the layout (masthead, columns, drop caps, bordered
+   bands) is newspaper-inspired, not the colors.
+   ============================================ */
+
+:root {
+  --font-masthead: "Playfair Display", serif;
+}
+
+.zine {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+/* ============================================
+   Masthead
+   ============================================ */
+.masthead {
+  padding: 0;
+}
+
+.masthead-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  font-family: var(--font-display);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--steel);
+}
+
+.double-rule {
+  border: none;
+  border-top: 4px double var(--rule);
+  margin: 0;
+}
+
+.masthead-rule {
+  border: none;
+  border-top: 1px solid var(--rule);
+  margin: 0;
+}
+
+.masthead-meta {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  padding: 16px 24px;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--steel);
+  text-align: center;
+}
+
+.masthead-meta .meta-sep {
+  color: var(--rule);
+}
+
+.masthead-body {
+  padding: 32px 24px 28px;
+  text-align: center;
+}
+
+.masthead-title {
+  font-family: var(--font-masthead);
+  font-weight: 900;
+  font-size: clamp(40px, 8vw, 72px);
+  margin: 0 0 8px;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.masthead-tagline {
+  font-family: var(--font-display);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--steel);
+  margin: 0;
+}
+
+.masthead-band {
+  width: 100%;
+  aspect-ratio: 16 / 5;
+  background: var(--tag-bg);
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 13px;
+  color: var(--steel);
+  background-size: cover;
+  background-position: center;
+}
+
+.category-line {
+  text-align: center;
+  padding: 18px 24px;
+  font-family: var(--font-masthead);
+  font-weight: 700;
+  font-size: clamp(15px, 2.2vw, 20px);
+  letter-spacing: 0.02em;
+  color: var(--ink);
+  border-bottom: 1px solid var(--rule);
+}
+
+/* ============================================
+   Search + tag filter bar
+   ============================================ */
+.zine-controls {
+  padding: 32px 24px 8px;
+  text-align: center;
+}
+
+.zine-search {
+  font-family: var(--font-body);
+  font-size: 15px;
+  border: none;
+  border-bottom: 1px solid var(--ink);
+  background: transparent;
+  color: var(--ink);
+  padding: 6px 4px;
+  width: 260px;
+  max-width: 100%;
+  text-align: center;
+}
+
+.zine-search::placeholder {
+  color: var(--steel);
+}
+
+.explore-heading {
+  font-family: var(--font-masthead);
+  font-style: italic;
+  font-size: 20px;
+  margin: 28px 0 18px;
+  color: var(--ink);
+}
+
+.zine-tags {
+  display: flex;
+  gap: 22px;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 0 24px 28px;
+}
+
+.zine-tag-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-display);
+  width: 84px;
+}
+
+.zine-tag-circle {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 1px solid var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-masthead);
+  font-size: 18px;
+  color: var(--ink);
+  background: var(--paper);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.zine-tag-btn:hover .zine-tag-circle {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.zine-tag-btn.is-active .zine-tag-circle {
+  background: var(--signal);
+  border-color: var(--signal);
+  color: var(--paper);
+}
+
+.zine-tag-label {
+  font-size: 11px;
+  letter-spacing: 0.03em;
+  text-transform: lowercase;
+  color: var(--ink);
+  text-align: center;
+  line-height: 1.3;
+}
+
+.zine-empty-state {
+  padding: 60px 24px;
+  text-align: center;
+  color: var(--steel);
+  font-family: var(--font-display);
+  font-size: 14px;
+}
+
+/* ============================================
+   Featured post (Blog index — leads the grid)
+   ============================================ */
+.zine-feature {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 32px;
+  padding: 32px 24px 40px;
+  border-bottom: 1px solid var(--rule);
+  align-items: start;
+}
+
+.zine-feature-media img,
+.zine-feature-media .img-placeholder {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  background: var(--tag-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 13px;
+  color: var(--steel);
+}
+
+.zine-feature-title {
+  font-family: var(--font-masthead);
+  font-size: clamp(26px, 3.6vw, 38px);
+  line-height: 1.15;
+  margin: 0 0 14px;
+}
+
+.zine-feature-title a {
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.zine-feature-title a:hover {
+  color: var(--signal);
+}
+
+.zine-feature-excerpt {
+  font-size: 17px;
+  max-width: 60ch;
+  margin: 0 0 16px;
+}
+
+.zine-feature-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  margin-top: 18px;
+  font-family: var(--font-display);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--steel);
+}
+
+.zine-feature-link {
+  color: var(--signal);
+  text-decoration: none;
+  border-bottom: 1px solid var(--signal);
+  padding-bottom: 2px;
+}
+
+.zine-feature-link:hover {
+  color: var(--ink);
+  border-color: var(--ink);
+}
+
+/* ============================================
+   Post grid (Blog index — "front page" teasers)
+   ============================================ */
+.zine-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+}
+
+.zine-card {
+  padding: 28px 24px;
+  border-right: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+
+.zine-card:nth-child(3n) {
+  border-right: none;
+}
+
+.zine-card .img-placeholder,
+.zine-card img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  background: var(--tag-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 12px;
+  color: var(--steel);
+  margin-bottom: 14px;
+}
+
+.zine-byline {
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--signal);
+  margin: 0 0 8px;
+}
+
+.zine-card h3 {
+  font-family: var(--font-masthead);
+  font-size: 22px;
+  line-height: 1.2;
+  margin: 0 0 10px;
+}
+
+.zine-card h3 a {
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.zine-card h3 a:hover {
+  color: var(--signal);
+}
+
+.zine-card p {
+  font-size: 15px;
+  color: var(--ink);
+  margin: 0 0 12px;
+}
+
+.zine-card .tag-list {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.zine-card .tag {
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border: 1px solid var(--rule);
+  padding: 2px 8px;
+  color: var(--steel);
+}
+
+/* ============================================
+   Single post page
+   ============================================ */
+.zine-post-header {
+  padding: 48px 24px 32px;
+  max-width: 720px;
+  margin: 0 auto;
+  text-align: center;
+  border-bottom: 1px solid var(--rule);
+}
+
+.zine-post-header .zine-byline {
+  justify-content: center;
+}
+
+.zine-byline .tag {
+  margin-right: 10px;
+}
+
+.zine-post-title {
+  font-family: var(--font-masthead);
+  font-size: clamp(30px, 5vw, 48px);
+  line-height: 1.15;
+  margin: 0 0 16px;
+}
+
+/* In-article H2 subheadings, rendered by build.js's "heading" block type */
+.post-heading {
+  font-family: var(--font-masthead);
+  font-size: clamp(22px, 3.4vw, 28px);
+  line-height: 1.25;
+  margin: 36px 0 14px;
+}
+
+.zine-post-meta {
+  font-family: var(--font-display);
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--steel);
+  margin: 0 0 16px;
+}
+
+.zine-hero-image {
+  width: 100%;
+  max-width: 900px;
+  aspect-ratio: 16 / 8;
+  margin: 32px auto;
+  background: var(--tag-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 13px;
+  color: var(--steel);
+}
+
+.zine-post-body {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 0 24px 60px;
+  column-count: 1;
+}
+
+.post-paragraph {
+  font-size: 18px;
+  line-height: 1.75;
+  margin: 0 0 20px;
+}
+
+.zine-post-body > .post-paragraph:first-of-type::first-letter {
+  font-family: var(--font-masthead);
+  font-size: 64px;
+  font-weight: 900;
+  float: left;
+  line-height: 0.8;
+  padding: 6px 8px 0 0;
+  color: var(--signal);
+}
+
+.pullquote {
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  padding: 24px 0;
+  margin: 32px 0;
+  text-align: center;
+}
+
+.pullquote p {
+  font-family: var(--font-masthead);
+  font-size: 26px;
+  font-style: italic;
+  line-height: 1.35;
+  margin: 0 0 8px;
+}
+
+.pullquote cite {
+  font-family: var(--font-display);
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--steel);
+  font-style: normal;
+}
+
+.post-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  margin: 24px 0;
+}
+
+.post-image {
+  margin: 32px 0;
+}
+
+.post-image img {
+  width: 100%;
+}
+
+.post-image figcaption {
+  font-family: var(--font-display);
+  font-size: 12px;
+  color: var(--steel);
+  margin-top: 8px;
+  text-align: center;
+}
+
+.image-group {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin: 32px 0;
+}
+
+.image-group img {
+  width: 100%;
+}
+
+.post-list {
+  font-size: 18px;
+  line-height: 1.75;
+  padding-left: 24px;
+  margin: 0 0 20px;
+}
+
+.post-divider {
+  border: none;
+  border-top: 1px solid var(--rule);
+  margin: 40px 0;
+}
+
+.post-back-link {
+  display: block;
+  max-width: 640px;
+  margin: 24px auto 0;
+  padding: 0 24px;
+  font-family: var(--font-display);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* ============================================
+   Responsive
+   ============================================ */
+@media (max-width: 900px) {
+  .zine-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .zine-card:nth-child(3n) {
+    border-right: 1px solid var(--rule);
+  }
+  .zine-card:nth-child(2n) {
+    border-right: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .zine-grid {
+    grid-template-columns: 1fr;
+  }
+  .zine-card {
+    border-right: none;
+  }
+  .zine-feature {
+    grid-template-columns: 1fr;
+  }
+  .post-columns,
+  .image-group {
+    grid-template-columns: 1fr;
+  }
+  .zine-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

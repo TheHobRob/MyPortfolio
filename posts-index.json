@@ -1,0 +1,44 @@
+[
+  {
+    "slug": "meal-kits-worth-a-second-try",
+    "title": "Meal Kits That Don't Taste Like Cardboard",
+    "date": "2026-03-15",
+    "tags": [
+      "Food",
+      "Reviews"
+    ],
+    "excerpt": "I gave up on meal kits years ago. These two changed my mind, and one is still in weekly rotation.",
+    "heroImage": {
+      "src": "",
+      "alt": "Placeholder hero image for meal kits post"
+    }
+  },
+  {
+    "slug": "wearables-worth-the-hype",
+    "title": "3 Wearables Actually Worth the Hype",
+    "date": "2026-03-10",
+    "tags": [
+      "Health",
+      "Tools"
+    ],
+    "excerpt": "Most fitness trackers overpromise. These three actually changed how I sleep, move, and recover.",
+    "heroImage": {
+      "src": "",
+      "alt": "Placeholder hero image for wearables post"
+    }
+  },
+  {
+    "slug": "5-budgeting-apps-2026",
+    "title": "5 Budgeting Apps Worth Trying in 2026",
+    "date": "2026-03-03",
+    "tags": [
+      "Finance",
+      "Tools"
+    ],
+    "excerpt": "A look at budgeting tools that actually stick, from bare-bones spreadsheets to full automation.",
+    "heroImage": {
+      "src": "",
+      "alt": "Placeholder hero image for budgeting apps post"
+    }
+  }
+]
