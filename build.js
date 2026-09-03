@@ -102,6 +102,24 @@ const blockRenderers = {
         .join("")}
     </div>`,
 
+  // Text on one side, one image on the other. "imagePosition" is "left" or
+  // "right" (default) — everything else follows the paragraph/image
+  // conventions: block.runs for the text side, block.image.{src,alt,caption}
+  // for the picture.
+  textImage: (block) => {
+    const position = block.imagePosition === "left" ? "left" : "right";
+    const textHtml = `<div class="text-image-text">${renderRuns(block.runs)}</div>`;
+    const imageHtml = `
+      <figure class="text-image-figure">
+        <img src="${block.image.src}" alt="${escapeHtml(block.image.alt)}" />
+        ${block.image.caption ? `<figcaption>${escapeHtml(block.image.caption)}</figcaption>` : ""}
+      </figure>`;
+    return `
+    <div class="text-image-block">
+      ${position === "left" ? imageHtml + textHtml : textHtml + imageHtml}
+    </div>`;
+  },
+
   divider: () => `<hr class="post-divider" />`,
 
   embed: (block) => `<!-- embed placeholder: ${block.provider} -->`,
@@ -145,9 +163,9 @@ function getRelatedPosts(post, allPosts) {
 // posts look like part of the same component family, not a new one. The
 // "related-card" modifier lets .related-posts-scroll override the grid-only
 // border/sizing rules (see blog-zine.css) without fighting their specificity.
-function renderRelatedCard(relatedPost, dispatchNumbers) {
-  const num = dispatchNumbers.get(relatedPost.slug);
-  const label = `Dispatch ${String(num).padStart(2, "0")}`;
+function renderRelatedCard(relatedPost, issueNumbers) {
+  const num = issueNumbers.get(relatedPost.slug);
+  const label = `Issue No. ${String(num).padStart(2, "0")}`;
   const imgTag = relatedPost.heroImage?.src
     ? `<img src="${relatedPost.heroImage.src}" alt="${escapeHtml(relatedPost.heroImage.alt || "")}">`
     : `<div class="img-placeholder" role="img" aria-label="Post image placeholder">Image</div>`;
@@ -165,14 +183,14 @@ function renderRelatedCard(relatedPost, dispatchNumbers) {
       </article>`;
 }
 
-function renderRelatedPosts(relatedPosts, dispatchNumbers) {
+function renderRelatedPosts(relatedPosts, issueNumbers) {
   if (relatedPosts.length === 0) return "";
   return `
   <section class="related-posts">
     <div class="wrap" style="max-width:900px;">
       <h2 class="section-title">Related Reading</h2>
       <div class="related-posts-scroll">
-        ${relatedPosts.map((p) => renderRelatedCard(p, dispatchNumbers)).join("")}
+        ${relatedPosts.map((p) => renderRelatedCard(p, issueNumbers)).join("")}
       </div>
     </div>
   </section>`;
@@ -180,24 +198,25 @@ function renderRelatedPosts(relatedPosts, dispatchNumbers) {
 
 // -------------------------------------------------
 // STEP 4: Load a post's template (by name, from post.template), with the
-// shared header/footer partials already stitched in. Cached per name
-// since multiple posts commonly share the same template.
+// shared header/footer/title-section partials already stitched in. Cached
+// per name since multiple posts commonly share the same template.
 // -------------------------------------------------
 const templateCache = {};
 
-function loadTemplate(name, headerPartial, footerPartial) {
+function loadTemplate(name, partials) {
   if (templateCache[name]) return templateCache[name];
 
   const templatePath = path.join(TEMPLATES_DIR, `${name}.html`);
   if (!fs.existsSync(templatePath)) {
     console.warn(`No template file for "${name}" — falling back to "${DEFAULT_TEMPLATE}"`);
-    return loadTemplate(DEFAULT_TEMPLATE, headerPartial, footerPartial);
+    return loadTemplate(DEFAULT_TEMPLATE, partials);
   }
 
   const raw = fs.readFileSync(templatePath, "utf-8");
   const stitched = raw
-    .replace(/{{HEADER}}/g, headerPartial)
-    .replace(/{{FOOTER}}/g, footerPartial);
+    .replace(/{{HEADER}}/g, partials.header)
+    .replace(/{{FOOTER}}/g, partials.footer)
+    .replace(/{{TITLE_SECTION}}/g, partials.titleSection);
 
   templateCache[name] = stitched;
   return stitched;
@@ -207,17 +226,26 @@ function loadTemplate(name, headerPartial, footerPartial) {
 // STEP 5: Inject rendered content + metadata into the stitched template.
 // Template should contain placeholders like {{TITLE}}, {{BODY}}, etc.
 // -------------------------------------------------
-function renderPost(post, template, allPosts, dispatchNumbers) {
+const DEFAULT_LOCATION = "Grand Rapids, MI, USA";
+
+function renderPost(post, template, allPosts, issueNumbers) {
   const bodyHtml = renderBody(post.body);
   const tagsHtml = post.tags.map((t) => `<span class="tag">${t}</span>`).join("");
   const relatedPostsHtml = renderRelatedPosts(
     getRelatedPosts(post, allPosts),
-    dispatchNumbers
+    issueNumbers
   );
   // Optional custom sub-title (e.g. "Mystic Martinez") — plain text, since
-  // it now sits inside a <span> in the Issue/Subtitle/Date eyebrow row and
+  // it sits inside a <span> in the Issue/Subtitle/Date eyebrow row and
   // inherits that row's styling directly (same as the Issue/Date spans).
   const subtitleText = post.subtitle ? escapeHtml(post.subtitle) : "";
+  // Where this post was written from — defaults to home base; a post
+  // written while traveling can override it with its own "location".
+  const locationText = post.location ? escapeHtml(post.location) : DEFAULT_LOCATION;
+  // Issue No. is the same computed number shown everywhere else on the
+  // site (homepage grid, Related Reading) — not the post JSON's own
+  // "issue" field, so a post never shows two different numbers for itself.
+  const issueNumber = String(issueNumbers.get(post.slug)).padStart(2, "0");
 
   return template
     .replace(/{{TITLE}}/g, escapeHtml(post.title))
@@ -225,11 +253,12 @@ function renderPost(post, template, allPosts, dispatchNumbers) {
     .replace(/{{DATE}}/g, post.date)
     .replace(/{{TAGS}}/g, tagsHtml)
     .replace(/{{SUBTITLE}}/g, subtitleText)
+    .replace(/{{LOCATION}}/g, locationText)
+    .replace(/{{ISSUE}}/g, issueNumber)
     .replace(/{{HERO_IMAGE_SRC}}/g, post.heroImage?.src || "")
     .replace(/{{HERO_IMAGE_ALT}}/g, post.heroImage?.alt || "")
     .replace(/{{BODY}}/g, bodyHtml)
-    .replace(/{{RELATED_POSTS}}/g, relatedPostsHtml)
-    .replace(/{{ISSUE}}/g, post.issue || "");
+    .replace(/{{RELATED_POSTS}}/g, relatedPostsHtml);
 }
 
 // -------------------------------------------------
@@ -239,8 +268,11 @@ function renderPost(post, template, allPosts, dispatchNumbers) {
 // knowledge of every other post before anything gets written to disk.
 // -------------------------------------------------
 function build() {
-  const headerPartial = fs.readFileSync(path.join(PARTIALS_DIR, "header.html"), "utf-8");
-  const footerPartial = fs.readFileSync(path.join(PARTIALS_DIR, "footer.html"), "utf-8");
+  const partials = {
+    header: fs.readFileSync(path.join(PARTIALS_DIR, "header.html"), "utf-8"),
+    footer: fs.readFileSync(path.join(PARTIALS_DIR, "footer.html"), "utf-8"),
+    titleSection: fs.readFileSync(path.join(PARTIALS_DIR, "title-section.html"), "utf-8"),
+  };
   const postFiles = fs.readdirSync(POSTS_DIR).filter((f) => f.endsWith(".json"));
 
   if (!fs.existsSync(OUTPUT_DIR)) fs.mkdirSync(OUTPUT_DIR, { recursive: true });
@@ -251,17 +283,17 @@ function build() {
   });
   allPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-  // Dispatch numbers read like issue numbers — oldest post is Dispatch 01 —
-  // computed once here so related-post cards match the homepage's own
-  // client-side numbering (blog.js), which uses the same date order.
-  const dispatchNumbers = new Map(
+  // Issue No. — oldest post is Issue No. 01 — computed once here so
+  // related-post cards and each post's own title section match the
+  // homepage's client-side numbering (blog.js), same date order.
+  const issueNumbers = new Map(
     allPosts.map((p, i) => [p.slug, allPosts.length - i])
   );
 
   allPosts.forEach((post) => {
     const templateName = post.template || DEFAULT_TEMPLATE;
-    const template = loadTemplate(templateName, headerPartial, footerPartial);
-    const html = renderPost(post, template, allPosts, dispatchNumbers);
+    const template = loadTemplate(templateName, partials);
+    const html = renderPost(post, template, allPosts, issueNumbers);
     const outputPath = path.join(OUTPUT_DIR, `${post.slug}.html`);
     fs.writeFileSync(outputPath, html, "utf-8");
     console.log(`Built: ${outputPath} (template: ${templateName})`);

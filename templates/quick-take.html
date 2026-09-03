@@ -1,13 +1,6 @@
 {{HEADER}}
 
-  <div class="zine-post-header">
-    <p class="zine-byline">{{TAGS}}</p>
-    <hr class="masthead-rule">
-    <h1 class="zine-post-title">{{TITLE}}</h1>
-    {{SUBTITLE}}
-    <hr class="masthead-rule">
-    <p class="zine-post-meta">By {{AUTHOR}} &middot; {{DATE}}</p>
-  </div>
+{{TITLE_SECTION}}
 
   <div class="wrap" style="max-width:640px;">
     <p class="disclosure-banner">This post may contain affiliate links. If you make a purchase through one, I may earn a commission at no extra cost to you. See the <a href="../index.html#affiliate-disclosure">full affiliate disclosure</a>.</p>
@@ -15,6 +8,10 @@
 
   <div class="zine-post-body zine-post-body--compact">
 {{BODY}}
+  </div>
+
+  <div class="wrap post-tags-footer">
+    <p class="zine-byline">TAGS: {{TAGS}}</p>
   </div>
 
 {{RELATED_POSTS}}

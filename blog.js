@@ -47,11 +47,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
-  // posts-index.json is sorted newest-first by build.js, but dispatch
-  // numbers read like issue numbers — oldest post is Dispatch 01, the
-  // newest is Dispatch N — so they stay fixed per post (not per position)
-  // as the reader searches/filters instead of renumbering.
-  const dispatchNumbers = new Map(posts.map((p, i) => [p.slug, posts.length - i]));
+  // posts-index.json is sorted newest-first by build.js — Issue No. is
+  // oldest post = Issue No. 01, newest = Issue No. N — fixed per post
+  // (not per position) so it stays stable as the reader searches/filters.
+  const issueNumbers = new Map(posts.map((p, i) => [p.slug, posts.length - i]));
   const featured = posts[0];
   const rest = posts.slice(1);
 
@@ -144,8 +143,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
-  function dispatchLabel(post) {
-    return `Dispatch ${String(dispatchNumbers.get(post.slug)).padStart(2, "0")}`;
+  function issueLabel(post) {
+    return `Issue No. ${String(issueNumbers.get(post.slug)).padStart(2, "0")}`;
   }
 
   function featureHtml(post) {
@@ -161,7 +160,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       <article class="zine-feature">
         <div class="zine-feature-media">${imgTag}</div>
         <div class="zine-feature-body">
-          <p class="zine-byline">${dispatchLabel(post)}</p>
+          <p class="zine-byline">${issueLabel(post)}</p>
           <h3 class="zine-feature-title"><a href="${postLinkPrefix}${post.slug}.html">${post.title}</a></h3>
           <p class="zine-feature-excerpt">${post.excerpt}</p>
           <ul class="tag-list">${tags}</ul>
@@ -185,7 +184,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     return `
       <article class="zine-card">
         ${imgTag}
-        <p class="zine-byline">${dispatchLabel(post)}</p>
+        <p class="zine-byline">${issueLabel(post)}</p>
         <h3><a href="${postLinkPrefix}${post.slug}.html">${post.title}</a></h3>
         <p>${post.excerpt}</p>
         <ul class="tag-list">${tags}</ul>

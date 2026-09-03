@@ -1,13 +1,6 @@
 {{HEADER}}
 
-  <div class="zine-post-header">
-    <p class="zine-byline">{{TAGS}}</p>
-    <hr class="masthead-rule">
-    <h1 class="zine-post-title">{{TITLE}}</h1>
-    {{SUBTITLE}}
-    <hr class="masthead-rule">
-    <p class="zine-post-meta">By {{AUTHOR}} &middot; {{DATE}}</p>
-  </div>
+{{TITLE_SECTION}}
 
   <div class="zine-hero-image zine-hero-image--tall" style="background-image:url('{{HERO_IMAGE_SRC}}'); background-size:cover; background-position:center;" role="img" aria-label="{{HERO_IMAGE_ALT}}"></div>
 
@@ -17,6 +10,10 @@
 
   <div class="zine-post-body">
 {{BODY}}
+  </div>
+
+  <div class="wrap post-tags-footer">
+    <p class="zine-byline">TAGS: {{TAGS}}</p>
   </div>
 
 {{RELATED_POSTS}}
