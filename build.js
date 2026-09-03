@@ -158,7 +158,7 @@ function renderRelatedCard(relatedPost, dispatchNumbers) {
   return `
       <article class="zine-card related-card">
         ${imgTag}
-        <p class="zine-byline">${label} &middot; ${escapeHtml(relatedPost.tags[0] || "Dispatch")}</p>
+        <p class="zine-byline">${label}</p>
         <h3><a href="${relatedPost.slug}.html">${escapeHtml(relatedPost.title)}</a></h3>
         <p>${escapeHtml(relatedPost.excerpt)}</p>
         <ul class="tag-list">${tags}</ul>
@@ -214,16 +214,22 @@ function renderPost(post, template, allPosts, dispatchNumbers) {
     getRelatedPosts(post, allPosts),
     dispatchNumbers
   );
+  // Optional custom sub-title (e.g. "Mystic Martinez") — plain text, since
+  // it now sits inside a <span> in the Issue/Subtitle/Date eyebrow row and
+  // inherits that row's styling directly (same as the Issue/Date spans).
+  const subtitleText = post.subtitle ? escapeHtml(post.subtitle) : "";
 
   return template
     .replace(/{{TITLE}}/g, escapeHtml(post.title))
     .replace(/{{AUTHOR}}/g, escapeHtml(post.author))
     .replace(/{{DATE}}/g, post.date)
     .replace(/{{TAGS}}/g, tagsHtml)
+    .replace(/{{SUBTITLE}}/g, subtitleText)
     .replace(/{{HERO_IMAGE_SRC}}/g, post.heroImage?.src || "")
     .replace(/{{HERO_IMAGE_ALT}}/g, post.heroImage?.alt || "")
     .replace(/{{BODY}}/g, bodyHtml)
-    .replace(/{{RELATED_POSTS}}/g, relatedPostsHtml);
+    .replace(/{{RELATED_POSTS}}/g, relatedPostsHtml)
+    .replace(/{{ISSUE}}/g, post.issue || "");
 }
 
 // -------------------------------------------------

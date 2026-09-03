@@ -1,9 +1,22 @@
 {{HEADER}}
 
-  <div class="zine-post-header">
-    <p class="zine-byline">{{TAGS}}</p>
-    <h1 class="zine-post-title">{{TITLE}}</h1>
-    <p class="zine-post-meta">By {{AUTHOR}} &middot; {{DATE}}</p>
+  <div class="masthead">
+    <div class="masthead-row">
+      <span>Grand Rapids, MI, USA</span>
+      <span>Est. 2026</span>
+    </div>
+    <hr class="masthead-rule">
+    <div class="masthead-body">
+      <h1 class="zine-post-title">{{TITLE}}</h1>
+      <p class="zine-post-meta">By {{AUTHOR}}</p>
+    </div>
+    <hr class="masthead-rule">
+    <div class="masthead-row">
+      <span>ISSUE NO.{{ISSUE}}</span>
+      <span>{{SUBTITLE}}</span>
+      <span>{{DATE}}</span>
+    </div>
+    <hr class="masthead-rule">
   </div>
 
   <div class="zine-hero-image" style="background-image:url('{{HERO_IMAGE_SRC}}'); background-size:cover; background-position:center;" role="img" aria-label="{{HERO_IMAGE_ALT}}"></div>
@@ -14,6 +27,10 @@
 
   <div class="zine-post-body">
 {{BODY}}
+  </div>
+
+  <div class="wrap post-tags-footer">
+    <p class="zine-byline">TAGS: {{TAGS}}</p>
   </div>
 
 {{RELATED_POSTS}}

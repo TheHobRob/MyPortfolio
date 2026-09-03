@@ -161,7 +161,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       <article class="zine-feature">
         <div class="zine-feature-media">${imgTag}</div>
         <div class="zine-feature-body">
-          <p class="zine-byline">${dispatchLabel(post)} &middot; ${(post.tags || [])[0] || "Dispatch"}</p>
+          <p class="zine-byline">${dispatchLabel(post)}</p>
           <h3 class="zine-feature-title"><a href="${postLinkPrefix}${post.slug}.html">${post.title}</a></h3>
           <p class="zine-feature-excerpt">${post.excerpt}</p>
           <ul class="tag-list">${tags}</ul>
@@ -185,7 +185,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     return `
       <article class="zine-card">
         ${imgTag}
-        <p class="zine-byline">${dispatchLabel(post)} &middot; ${(post.tags || [])[0] || "Dispatch"}</p>
+        <p class="zine-byline">${dispatchLabel(post)}</p>
         <h3><a href="${postLinkPrefix}${post.slug}.html">${post.title}</a></h3>
         <p>${post.excerpt}</p>
         <ul class="tag-list">${tags}</ul>

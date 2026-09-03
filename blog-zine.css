@@ -419,6 +419,12 @@
   justify-content: center;
 }
 
+/* Mirrors the homepage masthead's rule-sandwiched layout: byline, rule,
+   title + optional custom subtitle, rule, byline/date. */
+.zine-post-header .masthead-rule {
+  margin: 24px 0;
+}
+
 .zine-byline .tag {
   margin-right: 10px;
 }
@@ -595,6 +601,13 @@
   font-size: 13px;
   text-transform: uppercase;
   letter-spacing: 0.04em;
+}
+
+.post-tags-footer {
+  max-width: 640px;
+  padding-top: 24px;
+  padding-bottom: 24px;
+  text-align: center;
 }
 
 /* ============================================

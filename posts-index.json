@@ -1,5 +1,19 @@
 [
   {
+    "slug": "my-first-post",
+    "title": "My First Post",
+    "date": "2026-09-03",
+    "tags": [
+      "Lifestyle",
+      "WebDev"
+    ],
+    "excerpt": "Hello World! This is my first official post. Join me as I share my journey, experiences, and insights as I return to the world of coding, web development and beyond.",
+    "heroImage": {
+      "src": "",
+      "alt": "Placeholder photo of a quiet evening at home"
+    }
+  },
+  {
     "slug": "what-job-hunting-taught-me-about-remote-work-red-flags",
     "title": "What Job Hunting Taught Me About Remote Work Red Flags",
     "date": "2026-05-28",

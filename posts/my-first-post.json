@@ -1,0 +1,30 @@
+{
+  "slug": "my-first-post",
+  "title": "My First Post",
+  "subtitle": "Rob's Repo",
+  "author": "Roberto Jimenez-Martinez",
+  "date": "2026-09-03",
+  "issue": 1,
+  "tags": ["Lifestyle", "WebDev"],
+  "excerpt": "Hello World! This is my first official post. Join me as I share my journey, experiences, and insights as I return to the world of coding, web development and beyond.",
+  "heroImage": {
+    "src": "",
+    "alt": "Placeholder photo of a quiet evening at home"
+  },
+  "body": [
+    { "type": "paragraph", "runs": [
+      { "text": "Hello World! This is my first official post. Join me as I share my journey, experiences, and insights as I return to the world of coding, web development and beyond." }
+    ]},
+    { "type": "heading", "text": "The Return" },
+    { "type": "paragraph", "runs": [
+      { "text": "Placeholder — what actually happens the moment I get home." }
+    ]},
+    { "type": "imageGroup", "images": [
+      { "src": "", "alt": "Placeholder photo one", "caption": "Placeholder caption one" },
+      { "src": "", "alt": "Placeholder photo two", "caption": "Placeholder caption two" }
+    ]},
+    { "type": "paragraph", "runs": [
+      { "text": "Placeholder closing paragraph — what's worked and what hasn't." }
+    ]}
+  ]
+}
