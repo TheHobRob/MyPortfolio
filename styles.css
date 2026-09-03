@@ -25,7 +25,10 @@ html {
 }
 
 [id] {
-  scroll-margin-top: 20px;
+  /* Clears the sticky header (.site-header) so anchor jumps land below it
+     instead of underneath it — sized for the header's taller wrapped state
+     on narrow viewports, with a little breathing room on top of that. */
+  scroll-margin-top: 90px;
 }
 
 /* Hides the page while it jumps to a URL hash on load, so no section
@@ -97,6 +100,10 @@ button:focus-visible {
 .site-header {
   border-bottom: 1px solid var(--rule);
   padding: 20px 0;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--paper);
 }
 
 .header-row {

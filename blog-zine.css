@@ -290,6 +290,18 @@
 /* ============================================
    Post grid (Blog index — "front page" teasers)
    ============================================ */
+
+/* Homepage: everything below the featured post scrolls inside its own
+   bounded panel instead of growing the page — browsing "all" (or a
+   filtered tag) happens by scrolling this box, not the whole site. */
+.zine-grid-scroll {
+  max-height: 720px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  border-bottom: 1px solid var(--rule);
+  scrollbar-gutter: stable;
+}
+
 .zine-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -304,6 +316,27 @@
 
 .zine-card:nth-child(3n) {
   border-right: none;
+}
+
+/* Related Reading (bottom of every post) — a horizontally scrollable
+   strip instead of the homepage's dense grid, so "related first, then
+   everything else" (see build.js's getRelatedPosts) reads as one ordered
+   row you scroll through left to right. */
+.related-posts-scroll {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 12px;
+  scroll-snap-type: x proximity;
+  scrollbar-gutter: stable;
+}
+
+.related-posts-scroll .related-card {
+  flex: 0 0 280px;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  scroll-snap-align: start;
 }
 
 .zine-card .img-placeholder,
@@ -428,6 +461,14 @@
   color: var(--steel);
 }
 
+/* Photo-essay template — a bigger, taller-leaning hero to carry more
+   visual weight than the standard-article treatment. First-pass sizing,
+   not final. */
+.zine-hero-image--tall {
+  max-width: 1100px;
+  aspect-ratio: 4 / 5;
+}
+
 .zine-post-body {
   max-width: 640px;
   margin: 0 auto;
@@ -441,6 +482,16 @@
   margin: 0 0 20px;
 }
 
+/* Sits right after an affiliate link (see build.js's renderRuns) so the
+   disclosure is visible at the point of the link, not just in the banner. */
+.affiliate-marker {
+  color: var(--signal);
+  font-size: 0.7em;
+  vertical-align: super;
+  margin-left: 1px;
+  cursor: help;
+}
+
 .zine-post-body > .post-paragraph:first-of-type::first-letter {
   font-family: var(--font-masthead);
   font-size: 64px;
@@ -449,6 +500,18 @@
   line-height: 0.8;
   padding: 6px 8px 0 0;
   color: var(--signal);
+}
+
+/* Quick-take template — skips the drop cap to feel lighter/shorter than
+   a standard article. First-pass, not final. */
+.zine-post-body--compact > .post-paragraph:first-of-type::first-letter {
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  float: none;
+  line-height: inherit;
+  padding: 0;
+  color: inherit;
 }
 
 .pullquote {

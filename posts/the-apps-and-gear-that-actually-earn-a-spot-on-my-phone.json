@@ -1,0 +1,30 @@
+{
+  "slug": "the-apps-and-gear-that-actually-earn-a-spot-on-my-phone",
+  "title": "The Apps and Gear That Actually Earn a Spot on My Phone",
+  "author": "Roberto Jimenez-Martinez",
+  "date": "2026-05-14",
+  "issue": 5,
+  "tags": ["Tools"],
+  "excerpt": "Placeholder — the short list of things that survived every phone cleanup I've ever done.",
+  "heroImage": {
+    "src": "",
+    "alt": "Placeholder photo of a phone home screen"
+  },
+  "body": [
+    { "type": "paragraph", "runs": [
+      { "text": "Placeholder intro — most apps get deleted within a week. These didn't." }
+    ]},
+    { "type": "columns", "columns": [
+      { "runs": [{ "text": "Placeholder left column — first pick and why." }] },
+      { "runs": [{ "text": "Placeholder right column — second pick and why." }] }
+    ]},
+    { "type": "divider" },
+    { "type": "list", "style": "unordered", "items": [
+      { "runs": [{ "text": "Placeholder item one — " }, { "text": "affiliate link", "link": "https://example.com" }] },
+      { "runs": [{ "text": "Placeholder item two" }] }
+    ]},
+    { "type": "paragraph", "runs": [
+      { "text": "Placeholder closing paragraph." }
+    ]}
+  ]
+}

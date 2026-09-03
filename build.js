@@ -15,8 +15,10 @@ const path = require("path");
 
 const POSTS_DIR = path.join(__dirname, "posts");
 const OUTPUT_DIR = path.join(__dirname, "blog");
-const TEMPLATE_PATH = path.join(__dirname, "templates", "post-template.html");
+const TEMPLATES_DIR = path.join(__dirname, "templates");
+const PARTIALS_DIR = path.join(TEMPLATES_DIR, "partials");
 const INDEX_OUTPUT_PATH = path.join(__dirname, "posts-index.json");
+const DEFAULT_TEMPLATE = "standard-article";
 
 // -------------------------------------------------
 // STEP 1: Render a single "runs" array (the shared
@@ -27,7 +29,15 @@ function renderRuns(runs) {
   return runs
     .map((run) => {
       let text = escapeHtml(run.text);
-      if (run.link) text = `<a href="${run.link}">${text}</a>`;
+      if (run.link) {
+        const relAttr = run.affiliate
+          ? ` rel="sponsored nofollow" target="_blank"`
+          : "";
+        text = `<a href="${run.link}"${relAttr}>${text}</a>`;
+        if (run.affiliate) {
+          text += `<span class="affiliate-marker" title="Affiliate link">*</span>`;
+        }
+      }
       if (run.bold) text = `<strong>${text}</strong>`;
       if (run.italic) text = `<em>${text}</em>`;
       return text;
@@ -111,12 +121,99 @@ function renderBody(bodyBlocks) {
 }
 
 // -------------------------------------------------
-// STEP 3: Load template, inject rendered content + metadata
+// STEP 3: Related posts (bottom of every post)
+// Every other post, shown — same-tag matches first (most shared tags,
+// then newest), then everything else (newest first). One unified sort
+// naturally produces "related first, then the rest" without needing to
+// treat "has a tag match" and "fallback" as separate cases.
+// -------------------------------------------------
+function getRelatedPosts(post, allPosts) {
+  return allPosts
+    .filter((p) => p.slug !== post.slug)
+    .map((p) => ({
+      post: p,
+      sharedCount: p.tags.filter((t) => post.tags.includes(t)).length,
+    }))
+    .sort((a, b) => {
+      if (b.sharedCount !== a.sharedCount) return b.sharedCount - a.sharedCount;
+      return new Date(b.post.date) - new Date(a.post.date);
+    })
+    .map((entry) => entry.post);
+}
+
+// Reuses the .zine-card markup/classes from the homepage grid so related
+// posts look like part of the same component family, not a new one. The
+// "related-card" modifier lets .related-posts-scroll override the grid-only
+// border/sizing rules (see blog-zine.css) without fighting their specificity.
+function renderRelatedCard(relatedPost, dispatchNumbers) {
+  const num = dispatchNumbers.get(relatedPost.slug);
+  const label = `Dispatch ${String(num).padStart(2, "0")}`;
+  const imgTag = relatedPost.heroImage?.src
+    ? `<img src="${relatedPost.heroImage.src}" alt="${escapeHtml(relatedPost.heroImage.alt || "")}">`
+    : `<div class="img-placeholder" role="img" aria-label="Post image placeholder">Image</div>`;
+  const tags = relatedPost.tags
+    .map((t) => `<li class="tag">${escapeHtml(t)}</li>`)
+    .join("");
+
+  return `
+      <article class="zine-card related-card">
+        ${imgTag}
+        <p class="zine-byline">${label} &middot; ${escapeHtml(relatedPost.tags[0] || "Dispatch")}</p>
+        <h3><a href="${relatedPost.slug}.html">${escapeHtml(relatedPost.title)}</a></h3>
+        <p>${escapeHtml(relatedPost.excerpt)}</p>
+        <ul class="tag-list">${tags}</ul>
+      </article>`;
+}
+
+function renderRelatedPosts(relatedPosts, dispatchNumbers) {
+  if (relatedPosts.length === 0) return "";
+  return `
+  <section class="related-posts">
+    <div class="wrap" style="max-width:900px;">
+      <h2 class="section-title">Related Reading</h2>
+      <div class="related-posts-scroll">
+        ${relatedPosts.map((p) => renderRelatedCard(p, dispatchNumbers)).join("")}
+      </div>
+    </div>
+  </section>`;
+}
+
+// -------------------------------------------------
+// STEP 4: Load a post's template (by name, from post.template), with the
+// shared header/footer partials already stitched in. Cached per name
+// since multiple posts commonly share the same template.
+// -------------------------------------------------
+const templateCache = {};
+
+function loadTemplate(name, headerPartial, footerPartial) {
+  if (templateCache[name]) return templateCache[name];
+
+  const templatePath = path.join(TEMPLATES_DIR, `${name}.html`);
+  if (!fs.existsSync(templatePath)) {
+    console.warn(`No template file for "${name}" — falling back to "${DEFAULT_TEMPLATE}"`);
+    return loadTemplate(DEFAULT_TEMPLATE, headerPartial, footerPartial);
+  }
+
+  const raw = fs.readFileSync(templatePath, "utf-8");
+  const stitched = raw
+    .replace(/{{HEADER}}/g, headerPartial)
+    .replace(/{{FOOTER}}/g, footerPartial);
+
+  templateCache[name] = stitched;
+  return stitched;
+}
+
+// -------------------------------------------------
+// STEP 5: Inject rendered content + metadata into the stitched template.
 // Template should contain placeholders like {{TITLE}}, {{BODY}}, etc.
 // -------------------------------------------------
-function renderPost(post, template) {
+function renderPost(post, template, allPosts, dispatchNumbers) {
   const bodyHtml = renderBody(post.body);
   const tagsHtml = post.tags.map((t) => `<span class="tag">${t}</span>`).join("");
+  const relatedPostsHtml = renderRelatedPosts(
+    getRelatedPosts(post, allPosts),
+    dispatchNumbers
+  );
 
   return template
     .replace(/{{TITLE}}/g, escapeHtml(post.title))
@@ -125,43 +222,53 @@ function renderPost(post, template) {
     .replace(/{{TAGS}}/g, tagsHtml)
     .replace(/{{HERO_IMAGE_SRC}}/g, post.heroImage?.src || "")
     .replace(/{{HERO_IMAGE_ALT}}/g, post.heroImage?.alt || "")
-    .replace(/{{BODY}}/g, bodyHtml);
+    .replace(/{{BODY}}/g, bodyHtml)
+    .replace(/{{RELATED_POSTS}}/g, relatedPostsHtml);
 }
 
 // -------------------------------------------------
-// STEP 4: Main build process
+// STEP 6: Main build process
+// Two passes: (1) parse every post into memory and sort newest-first, so
+// (2) each post's related-posts section can be computed with full
+// knowledge of every other post before anything gets written to disk.
 // -------------------------------------------------
 function build() {
-  const template = fs.readFileSync(TEMPLATE_PATH, "utf-8");
+  const headerPartial = fs.readFileSync(path.join(PARTIALS_DIR, "header.html"), "utf-8");
+  const footerPartial = fs.readFileSync(path.join(PARTIALS_DIR, "footer.html"), "utf-8");
   const postFiles = fs.readdirSync(POSTS_DIR).filter((f) => f.endsWith(".json"));
 
   if (!fs.existsSync(OUTPUT_DIR)) fs.mkdirSync(OUTPUT_DIR, { recursive: true });
 
-  const indexEntries = [];
-
-  postFiles.forEach((filename) => {
+  const allPosts = postFiles.map((filename) => {
     const filePath = path.join(POSTS_DIR, filename);
-    const post = JSON.parse(fs.readFileSync(filePath, "utf-8"));
+    return JSON.parse(fs.readFileSync(filePath, "utf-8"));
+  });
+  allPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-    // Render and write the individual post page
-    const html = renderPost(post, template);
+  // Dispatch numbers read like issue numbers — oldest post is Dispatch 01 —
+  // computed once here so related-post cards match the homepage's own
+  // client-side numbering (blog.js), which uses the same date order.
+  const dispatchNumbers = new Map(
+    allPosts.map((p, i) => [p.slug, allPosts.length - i])
+  );
+
+  allPosts.forEach((post) => {
+    const templateName = post.template || DEFAULT_TEMPLATE;
+    const template = loadTemplate(templateName, headerPartial, footerPartial);
+    const html = renderPost(post, template, allPosts, dispatchNumbers);
     const outputPath = path.join(OUTPUT_DIR, `${post.slug}.html`);
     fs.writeFileSync(outputPath, html, "utf-8");
-    console.log(`Built: ${outputPath}`);
-
-    // Collect lightweight summary for posts-index.json
-    indexEntries.push({
-      slug: post.slug,
-      title: post.title,
-      date: post.date,
-      tags: post.tags,
-      excerpt: post.excerpt,
-      heroImage: post.heroImage,
-    });
+    console.log(`Built: ${outputPath} (template: ${templateName})`);
   });
 
-  // Sort newest first, write the index file
-  indexEntries.sort((a, b) => new Date(b.date) - new Date(a.date));
+  const indexEntries = allPosts.map((post) => ({
+    slug: post.slug,
+    title: post.title,
+    date: post.date,
+    tags: post.tags,
+    excerpt: post.excerpt,
+    heroImage: post.heroImage,
+  }));
   fs.writeFileSync(INDEX_OUTPUT_PATH, JSON.stringify(indexEntries, null, 2), "utf-8");
   console.log(`Built posts-index.json with ${indexEntries.length} posts`);
 }

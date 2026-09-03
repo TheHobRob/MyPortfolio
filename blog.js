@@ -202,6 +202,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       emptyState.hidden = filtered.length > 0;
       emptyState.textContent = "No posts match your search or filter.";
     }
+    // The homepage grid is its own scrollable panel (see .zine-grid-scroll) —
+    // switching tags/search shouldn't leave it mid-scroll from the last filter.
+    grid.scrollTop = 0;
   }
 
   // Landing here with a URL hash (e.g. a post page's "../index.html#contact"

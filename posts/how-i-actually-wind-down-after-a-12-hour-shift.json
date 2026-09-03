@@ -1,0 +1,29 @@
+{
+  "slug": "how-i-actually-wind-down-after-a-12-hour-shift",
+  "title": "How I Actually Wind Down After a 12-Hour Shift",
+  "author": "Roberto Jimenez-Martinez",
+  "date": "2026-05-01",
+  "issue": 4,
+  "tags": ["Health"],
+  "excerpt": "Placeholder — the real, unglamorous routine that gets me from clocked-out to actually relaxed.",
+  "heroImage": {
+    "src": "",
+    "alt": "Placeholder photo of a quiet evening at home"
+  },
+  "body": [
+    { "type": "paragraph", "runs": [
+      { "text": "Placeholder intro — after a long shift, the last thing I want is a complicated routine." }
+    ]},
+    { "type": "heading", "text": "The first twenty minutes" },
+    { "type": "paragraph", "runs": [
+      { "text": "Placeholder — what actually happens the moment I get home." }
+    ]},
+    { "type": "imageGroup", "images": [
+      { "src": "", "alt": "Placeholder photo one", "caption": "Placeholder caption one" },
+      { "src": "", "alt": "Placeholder photo two", "caption": "Placeholder caption two" }
+    ]},
+    { "type": "paragraph", "runs": [
+      { "text": "Placeholder closing paragraph — what's worked and what hasn't." }
+    ]}
+  ]
+}
