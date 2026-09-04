@@ -162,6 +162,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         <div class="zine-feature-body">
           <p class="zine-byline">${issueLabel(post)}</p>
           <h3 class="zine-feature-title"><a href="${postLinkPrefix}${post.slug}.html">${post.title}</a></h3>
+          <p class="zine-series"> ${post.series ? post.series.title : ""} ${post.series ? `Part ${post.series.part}` : ""}</p>
           <p class="zine-feature-excerpt">${post.excerpt}</p>
           <ul class="tag-list">${tags}</ul>
           <div class="zine-feature-meta">
@@ -186,9 +187,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         ${imgTag}
         <p class="zine-byline">${issueLabel(post)}</p>
         <h3><a href="${postLinkPrefix}${post.slug}.html">${post.title}</a></h3>
+        <p class="zine-series"> ${post.series ? post.series.title : ""} ${post.series ? `Part ${post.series.part}` : ""}</p>
         <p>${post.excerpt}</p>
         <ul class="tag-list">${tags}</ul>
         <p class="slide-meta" style="margin-top:10px;">${formatDate(post.date)}</p>
+
       </article>`;
   }
 

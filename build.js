@@ -20,6 +20,11 @@ const PARTIALS_DIR = path.join(TEMPLATES_DIR, "partials");
 const INDEX_OUTPUT_PATH = path.join(__dirname, "posts-index.json");
 const DEFAULT_TEMPLATE = "standard-article";
 
+// Set once per build (see build()) so renderRuns can resolve postLink slugs
+// without threading allPosts through every block renderer's signature —
+// same "shared state for one build run" pattern as templateCache below.
+let postsForLinkResolution = [];
+
 // -------------------------------------------------
 // STEP 1: Render a single "runs" array (the shared
 // text-formatting pattern used across paragraph,
@@ -29,7 +34,18 @@ function renderRuns(runs) {
   return runs
     .map((run) => {
       let text = escapeHtml(run.text);
-      if (run.link) {
+      if (run.postLink) {
+        // Internal cross-reference by slug, not a hardcoded URL — resolved
+        // to the real page here at build time. The hover/tap preview card
+        // is populated client-side from posts-index.json (see
+        // post-links.js), so only the slug needs to exist, not the post's
+        // title/excerpt/etc.
+        const target = postsForLinkResolution.find((p) => p.slug === run.postLink);
+        if (!target) {
+          console.warn(`postLink "${run.postLink}" does not match any post slug`);
+        }
+        text = `<a href="${run.postLink}.html" class="post-link" data-post-slug="${run.postLink}">${text}</a>`;
+      } else if (run.link) {
         const relAttr = run.affiliate
           ? ` rel="sponsored nofollow" target="_blank"`
           : "";
@@ -120,6 +136,52 @@ const blockRenderers = {
     </div>`;
   },
 
+  // Monospace code/schema snippet with a prose "subtext" caption underneath
+  // explaining what it shows — for the schema/data-structure asides in
+  // posts like drag-race-the-simulation, not for runnable code samples.
+  code: (block) => `
+    <figure class="post-code">
+      <pre class="post-code-block"><code>${escapeHtml(block.code)}</code></pre>
+      ${block.caption ? `<figcaption class="post-code-caption">${escapeHtml(block.caption)}</figcaption>` : ""}
+    </figure>`,
+
+  // Mocked-up spreadsheet snippet — not an embed of a real spreadsheet,
+  // just a hand-authored table (block.headers + block.rows) styled to look
+  // like one, so a post can show example rows/columns without wiring up an
+  // actual sheet. Column letters (A, B, C…) and row numbers are generated
+  // here purely for the visual, not sourced from the data.
+  spreadsheet: (block) => {
+    const headers = block.headers || [];
+    const rows = block.rows || [];
+    const colLetters = headers.map((_, i) => String.fromCharCode(65 + i));
+    const lettersRow = `<tr class="post-spreadsheet-letters"><th></th>${colLetters
+      .map((l) => `<th>${l}</th>`)
+      .join("")}</tr>`;
+    const headersRow = `<tr class="post-spreadsheet-headers"><th></th>${headers
+      .map((h) => `<th>${escapeHtml(h)}</th>`)
+      .join("")}</tr>`;
+    const bodyRows = rows
+      .map(
+        (row, i) => `
+      <tr>
+        <th class="post-spreadsheet-rownum">${i + 1}</th>
+        ${row.map((cell) => `<td>${escapeHtml(String(cell))}</td>`).join("")}
+      </tr>`
+      )
+      .join("");
+
+    return `
+    <figure class="post-spreadsheet">
+      <div class="post-spreadsheet-scroll">
+        <table class="post-spreadsheet-table">
+          <thead>${lettersRow}${headersRow}</thead>
+          <tbody>${bodyRows}</tbody>
+        </table>
+      </div>
+      ${block.caption ? `<figcaption class="post-spreadsheet-caption">${escapeHtml(block.caption)}</figcaption>` : ""}
+    </figure>`;
+  },
+
   divider: () => `<hr class="post-divider" />`,
 
   embed: (block) => `<!-- embed placeholder: ${block.provider} -->`,
@@ -178,6 +240,7 @@ function renderRelatedCard(relatedPost, issueNumbers) {
         ${imgTag}
         <p class="zine-byline">${label}</p>
         <h3><a href="${relatedPost.slug}.html">${escapeHtml(relatedPost.title)}</a></h3>
+        <p class="zine-series"> ${relatedPost.series ? escapeHtml(relatedPost.series.title) : ""} ${relatedPost.series ? `Part ${relatedPost.series.part}` : ""}</p>
         <p>${escapeHtml(relatedPost.excerpt)}</p>
         <ul class="tag-list">${tags}</ul>
       </article>`;
@@ -191,6 +254,56 @@ function renderRelatedPosts(relatedPosts, issueNumbers) {
       <h2 class="section-title">Related Reading</h2>
       <div class="related-posts-scroll">
         ${relatedPosts.map((p) => renderRelatedCard(p, issueNumbers)).join("")}
+      </div>
+    </div>
+  </section>`;
+}
+
+// -------------------------------------------------
+// Series (ongoing content, e.g. devlogs) — separate from tags on purpose:
+// tags describe what one post is about, series groups entries of an
+// ongoing thing together regardless of what each entry's tags say.
+// Ordered by "part" (ascending — devlogs read front-to-back), not date.
+// -------------------------------------------------
+function getSeriesPosts(post, allPosts) {
+  if (!post.series) return [];
+  return allPosts
+    .filter((p) => p.series && p.series.id === post.series.id && p.slug !== post.slug)
+    .sort((a, b) => (a.series.part || 0) - (b.series.part || 0));
+}
+
+// Same card component as Related Reading, but labeled by its place in the
+// series ("Part N") rather than the site-wide Issue No. — within a devlog,
+// episode order is the meaningful number, not overall post recency.
+function renderSeriesCard(seriesPost) {
+  const label = `Part ${seriesPost.series.part}`;
+  const imgTag = seriesPost.heroImage?.src
+    ? `<img src="${seriesPost.heroImage.src}" alt="${escapeHtml(seriesPost.heroImage.alt || "")}">`
+    : `<div class="img-placeholder" role="img" aria-label="Post image placeholder">Image</div>`;
+  const tags = seriesPost.tags
+    .map((t) => `<li class="tag">${escapeHtml(t)}</li>`)
+    .join("");
+
+  return `
+      <article class="zine-card related-card">
+        ${imgTag}
+        <p class="zine-byline">${label}</p>
+        <h3><a href="${seriesPost.slug}.html">${escapeHtml(seriesPost.title)}</a></h3>
+        <p>${escapeHtml(seriesPost.excerpt)}</p>
+        <ul class="tag-list">${tags}</ul>
+      </article>`;
+}
+
+function renderSeriesPosts(post, allPosts) {
+  if (!post.series) return "";
+  const seriesPosts = getSeriesPosts(post, allPosts);
+  if (seriesPosts.length === 0) return "";
+  return `
+  <section class="series-posts">
+    <div class="wrap" style="max-width:900px;">
+      <h2 class="section-title">More from ${escapeHtml(post.series.title)}</h2>
+      <div class="related-posts-scroll">
+        ${seriesPosts.map((p) => renderSeriesCard(p)).join("")}
       </div>
     </div>
   </section>`;
@@ -235,6 +348,7 @@ function renderPost(post, template, allPosts, issueNumbers) {
     getRelatedPosts(post, allPosts),
     issueNumbers
   );
+  const seriesPostsHtml = renderSeriesPosts(post, allPosts);
   // Optional custom sub-title (e.g. "Mystic Martinez") — plain text, since
   // it sits inside a <span> in the Issue/Subtitle/Date eyebrow row and
   // inherits that row's styling directly (same as the Issue/Date spans).
@@ -258,6 +372,7 @@ function renderPost(post, template, allPosts, issueNumbers) {
     .replace(/{{HERO_IMAGE_SRC}}/g, post.heroImage?.src || "")
     .replace(/{{HERO_IMAGE_ALT}}/g, post.heroImage?.alt || "")
     .replace(/{{BODY}}/g, bodyHtml)
+    .replace(/{{SERIES_POSTS}}/g, seriesPostsHtml)
     .replace(/{{RELATED_POSTS}}/g, relatedPostsHtml);
 }
 
@@ -282,6 +397,7 @@ function build() {
     return JSON.parse(fs.readFileSync(filePath, "utf-8"));
   });
   allPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
+  postsForLinkResolution = allPosts;
 
   // Issue No. — oldest post is Issue No. 01 — computed once here so
   // related-post cards and each post's own title section match the
@@ -306,6 +422,7 @@ function build() {
     tags: post.tags,
     excerpt: post.excerpt,
     heroImage: post.heroImage,
+    series: post.series || null,
   }));
   fs.writeFileSync(INDEX_OUTPUT_PATH, JSON.stringify(indexEntries, null, 2), "utf-8");
   console.log(`Built posts-index.json with ${indexEntries.length} posts`);

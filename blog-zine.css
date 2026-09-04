@@ -363,6 +363,16 @@
   margin: 0 0 8px;
 }
 
+.zine-card .zine-series,
+.zine-feature .zine-series {
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--steel);
+  margin: 0 0 8px;
+}
+
 .zine-card h3 {
   font-family: var(--font-masthead);
   font-size: 22px;
@@ -480,6 +490,108 @@
   cursor: help;
 }
 
+/* Internal cross-reference link (build.js's "postLink" runs, see
+   post-links.js for the hover/tap preview behavior). Dotted underline and
+   signal color distinguish it at a glance from a plain link (steel, solid
+   underline) and an affiliate link (solid underline + trailing asterisk). */
+.post-link {
+  color: var(--signal);
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.post-link:hover,
+.post-link:focus-visible {
+  text-decoration-style: solid;
+}
+
+/* Hover/tap preview card — positioned by post-links.js, content filled in
+   from posts-index.json client-side (no post data duplicated at build time). */
+.post-link-preview {
+  position: absolute;
+  z-index: 50;
+  width: min(300px, calc(100vw - 32px));
+  background: var(--paper-raised);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  box-shadow: 0 8px 24px rgba(28, 43, 57, 0.18);
+  overflow: hidden;
+}
+
+.post-link-preview[hidden] {
+  display: none;
+}
+
+.post-link-preview-media {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+}
+
+.post-link-preview-media img,
+.post-link-preview-media .img-placeholder {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--tag-bg);
+  font-family: var(--font-display);
+  font-size: 12px;
+  color: var(--steel);
+}
+
+.post-link-preview-body {
+  padding: 14px 16px 16px;
+}
+
+.post-link-preview-series {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--paper);
+  background: var(--signal);
+  padding: 2px 8px;
+  border-radius: 10px;
+  margin-bottom: 8px;
+}
+
+.post-link-preview-title {
+  font-family: var(--font-masthead);
+  font-size: 17px;
+  line-height: 1.25;
+  margin: 0 0 6px;
+  color: var(--ink);
+}
+
+.post-link-preview-excerpt {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--ink);
+  margin: 0 0 10px;
+}
+
+.post-link-preview-cta {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--signal);
+  text-decoration: none;
+  border-bottom: 1px solid var(--signal);
+}
+
+.post-link-preview-cta:hover {
+  color: var(--ink);
+  border-color: var(--ink);
+}
+
 .zine-post-body > .post-paragraph:first-of-type::first-letter {
   font-family: var(--font-masthead);
   font-size: 64px;
@@ -594,6 +706,95 @@
   color: var(--steel);
   margin-top: 8px;
   text-align: center;
+}
+
+/* Monospace schema/code snippet block (build.js's "code" block type),
+   with a prose caption underneath explaining what it shows. */
+.post-code {
+  margin: 32px 0;
+}
+
+.post-code-block {
+  margin: 0;
+  padding: 20px 24px;
+  background: var(--paper-raised);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  overflow-x: auto;
+}
+
+.post-code-block code {
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--ink);
+  white-space: pre;
+}
+
+.post-code-caption {
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--steel);
+  margin-top: 10px;
+}
+
+/* Mocked-up spreadsheet snippet (build.js's "spreadsheet" block type) — a
+   hand-authored table of example rows/columns styled to read as a sheet,
+   not an embed of a real one. Column-letters row + row-number rail are
+   purely decorative, generated at build time from the data's shape. */
+.post-spreadsheet {
+  margin: 32px 0;
+}
+
+.post-spreadsheet-scroll {
+  overflow-x: auto;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+}
+
+.post-spreadsheet-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
+  font-size: 13px;
+}
+
+.post-spreadsheet-table th,
+.post-spreadsheet-table td {
+  border: 1px solid var(--rule);
+  padding: 8px 14px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.post-spreadsheet-letters th {
+  background: var(--tag-bg);
+  color: var(--steel);
+  font-size: 11px;
+  font-weight: 400;
+  text-align: center;
+}
+
+.post-spreadsheet-headers th {
+  background: var(--paper-raised);
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.post-spreadsheet-rownum {
+  background: var(--tag-bg);
+  color: var(--steel);
+  font-weight: 400;
+  text-align: center;
+}
+
+.post-spreadsheet-caption {
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--steel);
+  margin-top: 10px;
 }
 
 .post-list {
