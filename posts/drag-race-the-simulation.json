@@ -1,7 +1,6 @@
 {
   "slug": "drag-race-the-simulation",
   "title": "Drag Race: The Simulator",
-  "subtitle": "Rob's Repo",
   "author": "Roberto Jimenez-Martinez",
   "date": "2026-09-04",
   "location": "Grand Rapids, MI",
@@ -26,10 +25,6 @@
       { "text": "As you know, my first time experiencing the show was in 2013. I was on a journey of self discovering my sexuality and I coped by watching videos online of people like me living their gayest lives online. I discovered many things about what other gay people liked like what they watched on television. I found a competition show about people just like me. The personalities were infectious, the art was extravagant, the outfits radiating eleganza. " },
       { "text": "The challenges? A challenge for sure. I was hooked immediately. Season 5 was wrapping up and the big question was are you #TeamJinkx? Or are you wrong? But as I was watching the show, the topic of “Track Records” would come up amongst the competitors during their run in the competition and the gears began to turn in my head. Racers start your engines for one of the most sickening sexy spreads of data of all time. And it all started with one file:" }
     ]},
-    { "type": "imageGroup", "images": [
-      { "src": "", "alt": "Placeholder photo one", "caption": "Placeholder caption one" },
-      { "src": "", "alt": "Placeholder photo two", "caption": "Placeholder caption two" }
-    ]},
     { "type": "heading", "text": "The Spreadsheet" },
     { "type": "paragraph", "runs": [
       { "text": "I started documenting every track record, for each queen, for every season, for every version of Drag Race. As the show began branching into different countries, the database began to grow exponentially. All Stars started releasing a season annually, then Drag Race branched to Thailand and the UK. After that the name went global. Today, we see seasons from several countries around the world. All stars for each country, royale style seasons that feature contestants from all franchises. And I kept documenting those track records. Let's take a looksy at our first schemas, shall we?:"}
@@ -49,13 +44,15 @@
         ["0048", "Coco Montrese"],
         ["0049", "Detox"],
         ["0050", "Honey Mahogany"],
-        ["0051", "Jade Jolie"],
-        ["0052", "Jinkx Monsoon"],
-        ["0053", "Lineysha Sparx"],
-        ["0054", "Monica Beverly Hillz"],
-        ["0055", "Roxxxy Andrews"],
-        ["0056", "Serena ChaCha"],
-        ["0057", "Vivienne Pinay"]
+        ["0051", "Ivy Winters"],
+        ["0052", "Jade Jolie"],
+        ["0053", "Jinkx Monsoon"],
+        ["0054", "Lineysha Sparx"],
+        ["0055", "Monica Beverly Hillz"],
+        ["0056", "Penny Tration"],
+        ["0057", "Roxxxy Andrews"],
+        ["0058", "Serena ChaCha"],
+        ["0059", "Vivienne Pinay"]
       ],
       "caption": "Season 5 Drag Race US Queens"
     },
@@ -78,7 +75,7 @@
         ["050105107", "0501", "7", "0051: [Ivy Winter]", "TOP", "..."],
         ["050105208", "0501", "8", "0052: [Jade Jolie]", "LOW", "..."],
         ["050105409", "0501", "9", "0054: [Lineysha Sparx]", "TOP", "..."],
-        ["050105010", "0501", "10", "0050: [Honey Mahogany]", "SAFE", "..."],
+        ["050105011", "0501", "11", "0050: [Honey Mahogany]", "SAFE", "..."],
         ["050105911", "0501", "11", "0059: [Vivienne Pinay]", "SAFE", "..."],
         ["050105512", "0501", "12", "0055: [Monica Beverly Hillz]", "SAFE", "..."],
         ["050105813", "0501", "13", "0058: [Serena ChaCha]", "BTM", "..."],

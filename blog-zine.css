@@ -468,7 +468,7 @@
 }
 
 .zine-post-body {
-  max-width: 640px;
+  max-width: 900px;
   margin: 0 auto;
   padding: 0 24px 60px;
   column-count: 1;
@@ -745,6 +745,7 @@
    purely decorative, generated at build time from the data's shape. */
 .post-spreadsheet {
   margin: 32px 0;
+  padding: 0 100px;
 }
 
 .post-spreadsheet-scroll {

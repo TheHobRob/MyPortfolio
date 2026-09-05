@@ -349,10 +349,6 @@ function renderPost(post, template, allPosts, issueNumbers) {
     issueNumbers
   );
   const seriesPostsHtml = renderSeriesPosts(post, allPosts);
-  // Optional custom sub-title (e.g. "Mystic Martinez") — plain text, since
-  // it sits inside a <span> in the Issue/Subtitle/Date eyebrow row and
-  // inherits that row's styling directly (same as the Issue/Date spans).
-  const subtitleText = post.subtitle ? escapeHtml(post.subtitle) : "";
   // Where this post was written from — defaults to home base; a post
   // written while traveling can override it with its own "location".
   const locationText = post.location ? escapeHtml(post.location) : DEFAULT_LOCATION;
@@ -366,7 +362,6 @@ function renderPost(post, template, allPosts, issueNumbers) {
     .replace(/{{AUTHOR}}/g, escapeHtml(post.author))
     .replace(/{{DATE}}/g, post.date)
     .replace(/{{TAGS}}/g, tagsHtml)
-    .replace(/{{SUBTITLE}}/g, subtitleText)
     .replace(/{{LOCATION}}/g, locationText)
     .replace(/{{ISSUE}}/g, issueNumber)
     .replace(/{{HERO_IMAGE_SRC}}/g, post.heroImage?.src || "")

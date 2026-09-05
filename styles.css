@@ -2,19 +2,19 @@
    Tokens
    ============================================ */
 :root {
-  --ink: #1C2B39;
-  --paper: #EEF1F0;
-  --steel: #3E5C76;
-  --signal: #2F6F62;
-  --rule: #C9CFCD;
-  --paper-raised: #F8F9F8;
-  --tag-bg: #E4E9E8;
+  --ink: #2E2517;
+  --paper: #F2ECDD;
+  --steel: #B08F52;
+  --signal: #5D6A39;
+  --rule: #E0D5B8;
+  --paper-raised: #F8F3E6;
+  --tag-bg: #EAE8CC;
 
   --font-display: "Space Grotesk", sans-serif;
   --font-body: "Source Serif 4", serif;
   --font-masthead: "Playfair Display", serif;
 
-  --max-width: 900px;
+  --max-width: 1200px;
 }
 
 * { box-sizing: border-box; }
@@ -211,49 +211,6 @@ section {
 }
 
 /* ============================================
-   Timeline (Experience section)
-   ============================================ */
-.timeline {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.timeline li {
-  display: grid;
-  grid-template-columns: 48px 1fr;
-  gap: 20px;
-  padding-bottom: 32px;
-}
-
-.timeline li:last-child {
-  padding-bottom: 0;
-}
-
-.timeline-index {
-  font-family: var(--font-display);
-  font-size: 14px;
-  color: var(--signal);
-  padding-top: 3px;
-}
-
-.timeline h3 {
-  font-size: 19px;
-  margin: 0 0 4px;
-}
-
-.timeline-meta {
-  font-family: var(--font-display);
-  font-size: 13px;
-  color: var(--steel);
-  margin: 0 0 8px;
-}
-
-.timeline p:last-child {
-  margin: 0;
-}
-
-/* ============================================
    Skills / Projects grid
    ============================================ */
 .skills-grid {
@@ -400,10 +357,45 @@ section {
 }
 
 /* ============================================
-   About Me preview (Home page, below carousel)
+   About the Company (Home page, logo + intro)
+   ============================================ */
+.company-about-inner {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 40px;
+  align-items: center;
+}
+
+.company-logo-placeholder {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 4px;
+  background: var(--tag-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 13px;
+  color: var(--steel);
+}
+
+@media (max-width: 640px) {
+  .company-about-inner {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============================================
+   Creator (Home page, below Blog)
    ============================================ */
 .about-preview {
   padding: 56px 24px;
+}
+
+/* #creator stacks the bio and Side projects blocks as sibling .wrap
+   elements in one section — space them like separate sections used to. */
+.about-preview > .wrap + .wrap {
+  margin-top: 56px;
 }
 
 .about-preview-inner {
@@ -430,20 +422,6 @@ section {
 .about-preview-text p:not(.about-preview-greeting) {
   max-width: 52ch;
   margin: 0 0 20px;
-}
-
-.about-preview-cta {
-  font-family: var(--font-display);
-  font-size: 14px;
-  text-decoration: none;
-  color: var(--signal);
-  border-bottom: 1px solid var(--signal);
-  padding-bottom: 2px;
-}
-
-.about-preview-cta:hover {
-  color: var(--ink);
-  border-color: var(--ink);
 }
 
 @media (max-width: 640px) {
